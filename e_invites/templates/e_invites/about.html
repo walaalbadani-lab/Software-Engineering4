@@ -1,0 +1,243 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>من نحن | {{ arabic_name|title }}</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: Tahoma, Arial, sans-serif;
+            background: #f5eee5;
+            color: #4b3329;
+            line-height: 1.8;
+            position: relative;
+        }
+
+        body::before {
+            content: "";
+            position: fixed;
+            inset: 0;
+            background: url("{% static 'e_invites/22.jpg' %}") center/430px no-repeat;
+            opacity: 0.055;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        header {
+            background: #4a3228;
+            padding: 14px 8%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: white;
+        }
+
+        .brand img {
+            width: 65px;
+            height: 65px;
+            object-fit: cover;
+            border-radius: 50%;
+            border: 2px solid #d8b58d;
+        }
+
+        .brand small {
+            color: #e7d3bc;
+        }
+
+        nav {
+            display: flex;
+            gap: 22px;
+        }
+
+        nav a {
+            color: white;
+            text-decoration: none;
+        }
+
+        nav a:hover {
+            color: #d8b58d;
+        }
+
+        .hero {
+            min-height: 400px;
+            padding: 80px 8%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            text-align: center;
+            color: white;
+            background:
+                linear-gradient(
+                    rgba(55, 34, 27, 0.74),
+                    rgba(55, 34, 27, 0.74)
+                ),
+                url("{% static 'e_invites/22.jpg' %}") center/cover no-repeat;
+        }
+
+        .hero h1 {
+            font-size: 48px;
+            margin-bottom: 12px;
+        }
+
+        section {
+            padding: 65px 8%;
+        }
+
+        .box {
+            max-width: 950px;
+            margin: auto;
+            padding: 35px;
+            background: rgba(255, 250, 244, 0.95);
+            border-radius: 14px;
+            box-shadow: 0 8px 25px rgba(72, 46, 36, 0.12);
+        }
+
+        .box h2 {
+            color: #573a2d;
+            margin-bottom: 12px;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 18px;
+            margin-top: 25px;
+        }
+
+        .item {
+            padding: 22px;
+            text-align: center;
+            background: #f5eee5;
+            border-radius: 10px;
+        }
+
+        .item strong {
+            color: #a77953;
+            font-size: 24px;
+        }
+
+        .button {
+            display: inline-block;
+            padding: 12px 28px;
+            margin-top: 25px;
+            background: #a77953;
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+        }
+
+        footer {
+            background: #2f211b;
+            color: white;
+            text-align: center;
+            padding: 25px;
+        }
+
+        @media (max-width: 700px) {
+            header {
+                flex-direction: column;
+                gap: 12px;
+            }
+
+            nav {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+
+            .hero h1 {
+                font-size: 36px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<header>
+    <div class="brand">
+        <img src="{% static 'e_invites/22.jpg' %}" alt="شعار دعوات إلكترونية">
+
+        <div>
+            <h2>{{ arabic_name|capfirst }}</h2>
+            <small>{{ site_name|upper }}</small>
+        </div>
+    </div>
+
+    <nav><a href="{% url 'e_invites:home' %}">الرئيسية</a>
+        <a href="{% url 'e_invites:order' %}">الطلب</a>
+        <a href="{% url 'e_invites:about' %}">من نحن</a>
+    </nav>
+</header>
+
+<main>
+    <section class="hero">
+        <h1>من نحن</h1>
+
+        <p>
+            منصة متخصصة في تصميم الدعوات الإلكترونية
+            والصور والفيديوهات والورقيات.
+        </p>
+    </section>
+
+    <section>
+        <div class="box">
+            <h2>{{ arabic_name|title }}</h2>
+
+            <p>
+                نعمل على تقديم تصاميم أنيقة ومناسبة
+                لجميع المناسبات بأسعار واضحة وجودة عالية.
+            </p>
+
+            {% if version == 1 %}
+                <p>{{ version_status }}</p>
+            {% elif version == 2 %}
+                <p>{{ version_status }}</p>
+            {% else %}
+                <p>{{ version_status }}</p>
+            {% endif %}
+
+            <div class="grid">
+                {% for value in values %}
+                    <div class="item">
+                        <strong>{{ value.number }}</strong>
+                        <p>{{ value.name|capfirst }}</p>
+                    </div>
+                {% endfor %}
+            </div>
+
+            <p>
+                فريق العمل: {{ team_members|join:"، " }}
+            </p>
+
+            <a href="{% url 'e_invites:home' %}" class="button">
+                العودة إلى الرئيسية
+            </a>
+        </div>
+    </section>
+</main>
+
+<footer>
+    <p>
+        {{ site_name|lower }}
+        © {{ current_date|date:"Y" }}
+    </p>
+</footer>
+
+</body>
+</html>
