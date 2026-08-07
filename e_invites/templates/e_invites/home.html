@@ -5,351 +5,113 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ arabic_name|title }} | الرئيسية</title>
 
-    <title>{{ arabic_name|title }}</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;800&display=swap" rel="stylesheet">
 
     <style>
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
-
-        html {
-            scroll-behavior: smooth;
-        }
-
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        html { scroll-behavior: smooth; }
         body {
-            font-family: Tahoma, Arial, sans-serif;
+            font-family: 'Cairo', Tahoma, sans-serif;
             background: #f5eee5;
             color: #4b3329;
             line-height: 1.8;
             position: relative;
         }
-
         body::before {
             content: "";
             position: fixed;
             inset: 0;
-            background: url("{% static 'e_invites/22.jpg' %}") center/430px no-repeat;
-            opacity: 0.055;
+            background: url("{% static 'e_invites/22.jpg' %}") center/430px repeat;
+            opacity: 0.04;
             pointer-events: none;
             z-index: -1;
         }
-
         header {
             background: #4a3228;
-            padding: 14px 8%;
+            padding: 12px 8%;
             display: flex;
             justify-content: space-between;
             align-items: center;
             position: sticky;
             top: 0;
             z-index: 1000;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
         }
-
-        .brand {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            color: white;
-        }
-
+        .brand { display: flex; align-items: center; gap: 15px; color: white; }
         .brand img {
-            width: 65px;
-            height: 65px;
-            object-fit: cover;
-            border-radius: 50%;
-            border: 2px solid #d8b58d;
+            width: 60px; height: 60px; object-fit: cover; border-radius: 50%;
+            border: 2px solid #d8b58d; box-shadow: 0 0 10px rgba(216, 181, 141, 0.4);
         }
-
-        .brand h2 {
-            font-size: 22px;
-        }
-
-        .brand small {
-            color: #e7d3bc;
-        }
-
-        nav {
-            display: flex;
-            gap: 22px;
-        }
-
+        .brand h2 { font-size: 22px; font-weight: 800; margin-bottom: -5px; }
+        .brand small { color: #e7d3bc; font-weight: 600; }
+        nav { display: flex; gap: 20px; }
         nav a {
-            color: white;
-            text-decoration: none;
-            transition: 0.3s;
-            cursor: pointer;
+            color: white; text-decoration: none; font-weight: 600;
+            padding: 8px 16px; border-radius: 8px; transition: all 0.3s ease; cursor: pointer;
         }
+        nav a:hover { background: rgba(216, 181, 141, 0.15); color: #d8b58d; transform: translateY(-2px); }
 
-        nav a:hover {
-            color: #d8b58d;
+        .hero-modern {
+            display: flex; align-items: center; justify-content: space-between;
+            min-height: 85vh; padding: 60px 8%;
+            background: linear-gradient(135deg, #4a3228 0%, #2f211b 100%);
+            color: white; position: relative; overflow: hidden;
         }
-
-        .hero {
-            min-height: 540px;
-            padding: 80px 8%;
-            display: flex;
-            align-items: center;
-            color: white;
-            background:
-                linear-gradient(
-                    rgba(55, 34, 27, 0.72),
-                    rgba(55, 34, 27, 0.72)
-                ),
-                url("{% static 'e_invites/22.jpg' %}") center/cover no-repeat;
+        .hero-text { flex: 1; max-width: 600px; z-index: 2; }
+        .hero-text h1 { font-size: 60px; font-weight: 800; color: #d8b58d; margin-bottom: 20px; line-height: 1.2; }
+        .hero-text p { font-size: 20px; color: #e7d3bc; margin-bottom: 30px; }
+        
+        .hero-visual { flex: 1; display: flex; justify-content: center; position: relative; z-index: 2; }
+        .hero-visual video {
+            width: 100%; max-width: 400px; border-radius: 20px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5); border: 4px solid #a77953;
+            transform: rotate(-3deg); transition: 0.5s;
         }
-
-        .hero-content {
-            max-width: 680px;
-        }
-
-        .hero h1 {
-            font-size: 55px;
-            margin-bottom: 15px;
-        }
-
-        .hero p {
-            font-size: 19px;
-            margin-bottom: 10px;
-        }
+        .hero-visual video:hover { transform: rotate(0deg) scale(1.02); }
 
         .button {
-            display: inline-block;
-            padding: 11px 27px;
-            margin-top: 16px;
-            background: #a77953;
-            color: white;
-            text-decoration: none;
-            border-radius: 7px;
-            border: 0;
-            cursor: pointer;
-            font-family: inherit;
-            transition: 0.3s;
+            display: inline-block; padding: 14px 35px; background: linear-gradient(135deg, #a77953, #8c5d3a);
+            color: white; text-decoration: none; font-weight: 700; font-size: 17px;
+            border-radius: 30px; border: none; cursor: pointer; transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(167, 121, 83, 0.4);
         }
+        .button:hover { transform: scale(1.05); box-shadow: 0 6px 20px rgba(167, 121, 83, 0.6); }
 
-        .button:hover {
-            background: #855c3d;
-        }
+        section { padding: 80px 8%; }
+        .section-title { text-align: center; margin-bottom: 50px; }
+        .section-title h2 { font-size: 38px; color: #4a3228; font-weight: 800; position: relative; display: inline-block; }
+        .section-title h2::after { content: ''; width: 50%; height: 3px; background: #a77953; position: absolute; bottom: -5px; left: 25%; border-radius: 5px; }
+        
+        .products { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 30px; max-width: 1200px; margin: auto; }
+        .card { background: #fff; border-radius: 20px; overflow: hidden; box-shadow: 0 10px 30px rgba(72, 46, 36, 0.08); transition: all 0.4s ease; border: 1px solid #f0e6d8; }
+        .card:hover { transform: translateY(-10px); box-shadow: 0 15px 40px rgba(167, 121, 83, 0.2); border-color: #d8b58d; }
+        .card-image-box { height: 280px; overflow: hidden; background: #f1e8de; position: relative; }
+        .card-image-box img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.6s ease; cursor: pointer; }
+        .card:hover .card-image-box img { transform: scale(1.1); }
+        .card video { width: 100%; height: 280px; object-fit: cover; background: #2f211b; }
+        .card-content { padding: 25px; text-align: center; }
+        .card-content h3 { color: #4a3228; font-size: 22px; font-weight: 800; margin-bottom: 10px; }
+        .price { color: #a77953; font-size: 24px; font-weight: 800; margin-bottom: 20px; background: #fdfaf6; padding: 5px 15px; border-radius: 10px; display: inline-block; border: 1px dashed #d8b58d; }
+        .card .button { width: 100%; }
 
-        section {
-            padding: 70px 8%;
-        }
+        .hidden-section { display: none; }
+        .image-modal { display: none; position: fixed; inset: 0; z-index: 3000; background: rgba(0, 0, 0, 0.9); align-items: center; justify-content: center; padding: 30px; }
+        .image-modal.show { display: flex; }
+        .modal-content { position: relative; max-width: 900px; width: 100%; height: 90vh; display: flex; justify-content: center; align-items: center; }
+        .modal-content img { max-width: 100%; max-height: 100%; object-fit: contain; border-radius: 10px; border: 2px solid #a77953; }
+        .close-modal { position: absolute; top: -20px; right: -20px; width: 50px; height: 50px; border: none; border-radius: 50%; background: #a77953; color: white; font-size: 35px; cursor: pointer; z-index: 2; transition: 0.3s; }
+        .close-modal:hover { background: #8c5d3a; transform: scale(1.1); }
+        
+        footer { background: #2f211b; color: #e7d3bc; text-align: center; padding: 25px; font-weight: 600; border-top: 4px solid #a77953; }
 
-        .section-title {
-            text-align: center;
-            margin-bottom: 40px;
-        }
-
-        .section-title h2 {
-            font-size: 36px;
-            color: #573a2d;
-        }
-
-        .section-title p {
-            color: #80695d;
-        }
-
-        .products {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(215px, 1fr));
-            gap: 22px;
-            max-width: 1150px;
-            margin: auto;
-        }
-
-        .card {
-            background: rgba(255, 250, 244, 0.94);
-            border-radius: 14px;
-            overflow: hidden;
-            box-shadow: 0 8px 25px rgba(72, 46, 36, 0.13);
-            transition: 0.3s;
-        }
-
-        .card:hover {
-            transform: translateY(-6px);
-        }
-
-        .card-image-box {
-            height: 255px;
-            padding: 10px;
-            background: #f1e8de;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .card img {
-            width: 100%;height: 100%;
-            object-fit: contain;
-            display: block;
-            cursor: pointer;
-            border-radius: 7px;
-        }
-
-        .card video {
-            width: 100%;
-            height: 285px;
-            object-fit: contain;
-            display: block;
-            background: #2f211b;
-        }
-
-        .card-content {
-            padding: 17px;
-        }
-
-        .card-content h3 {
-            color: #573a2d;
-            margin-bottom: 5px;
-        }
-
-        .price {
-            color: #855c3d;
-            font-size: 19px;
-            font-weight: bold;
-        }
-
-        .order-banner {
-            background: rgba(231, 216, 199, 0.93);
-            text-align: center;
-        }
-
-        .order-box {
-            max-width: 800px;
-            margin: auto;
-            padding: 35px;
-            background: rgba(255, 250, 244, 0.96);
-            border-radius: 14px;
-            box-shadow: 0 8px 25px rgba(69, 45, 36, 0.10);
-        }
-
-        .reviews {
-            display: grid;
-            gap: 18px;
-            max-width: 900px;
-            margin: auto;
-        }
-
-        .review {
-            display: flex;
-            align-items: center;
-            gap: 25px;
-            padding: 22px;
-            background: rgba(255, 250, 244, 0.95);
-            border-radius: 12px;
-            box-shadow: 0 6px 20px rgba(69, 45, 36, 0.10);
-        }
-
-        .review-name {
-            min-width: 170px;
-            color: #573a2d;
-            border-left: 2px solid #d8b58d;
-        }
-
-        .review-message {
-            flex: 1;
-        }
-
-        .hidden-section {
-            display: none;
-        }
-
-        .image-modal {
-            display: none;
-            position: fixed;
-            inset: 0;
-            z-index: 3000;
-            background: rgba(0, 0, 0, 0.88);
-            align-items: center;
-            justify-content: center;
-            padding: 30px;
-        }
-
-        .image-modal.show {
-            display: flex;
-        }
-
-        .modal-content {
-            position: relative;
-            max-width: 900px;
-            width: 100%;
-            height: 90vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .modal-content img {
-            max-width: 100%;
-            max-height: 100%;
-            object-fit: contain;
-            border-radius: 10px;
-            background: white;
-        }
-
-        .close-modal {
-            position: absolute;
-            top: -14px;
-            right: -5px;
-            width: 46px;
-            height: 46px;
-            border: 0;
-            border-radius: 50%;
-            background: white;
-            color: #4a3228;
-            font-size: 29px;
-            font-weight: bold;
-            cursor: pointer;
-            z-index: 2;
-        }
-
-        footer {
-            background: #2f211b;
-            color: white;
-            text-align: center;
-            padding: 25px;
-        }
-
-        @media (max-width: 750px) {
-            header {
-                flex-direction: column;
-                gap: 12px;
-            }
-
-            nav {
-                flex-wrap: wrap;
-                justify-content: center;
-                gap: 14px;
-            }
-
-            .hero {
-                min-height: 470px;
-            }
-
-            .hero h1 {
-                font-size: 38px;
-            }
-
-            .products {
-                grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-            }
-
-            .card-image-box {
-                height: 225px;
-            }
-
-            .review {
-                flex-direction: column;
-                align-items: flex-start;
-            }
-
-            .review-name {
-                border-left: 0;
-                border-bottom: 2px solid #d8b58d;
-                width: 100%;
-            }
+        @media (max-width: 768px) {
+            header { flex-direction: column; padding: 15px; gap: 15px; }
+            nav { width: 100%; justify-content: space-around; flex-wrap: wrap; }
+            .hero-modern { flex-direction: column; text-align: center; padding-top: 40px; }
+            .hero-text h1 { font-size: 40px; }
+            .hero-visual video { transform: rotate(0); margin-top: 30px; max-width: 80%; }
         }
     </style>
 </head>
@@ -359,9 +121,9 @@
 <header>
     <div class="brand">
         <img src="{% static 'e_invites/22.jpg' %}" alt="شعار دعوات إلكترونية">
-
         <div>
-            <h2>{{ arabic_name|capfirst }}</h2><small>{{ site_name|upper }}</small>
+            <h2>{{ arabic_name|capfirst }}</h2>
+            <small>{{ site_name|upper }}</small>
         </div>
     </div>
 
@@ -375,237 +137,113 @@
 </header>
 
 <main>
-
-    <section class="hero" id="home">
-        <div class="hero-content">
+    <section class="hero-modern" id="home">
+        <div class="hero-text">
             <h1>{{ arabic_name|title }}</h1>
-
-            <p>
-                نصمم دعوات إلكترونية ورسومات وفيديوهات وورقيات
-                تناسب مختلف المناسبات.
-            </p>
-
+            <p>نصمم دعوات إلكترونية، فيديوهات احترافية، وورقيات تليق بفخامة مناسباتكم السعيدة وتوثق أجمل اللحظات.</p>
             {% if service_available %}
-                <p>{{ service_message }}</p>
+                <p style="color: #a77953; font-weight: bold; margin-bottom: 20px;">{{ service_message }}</p>
             {% else %}
-                <p>الخدمة غير متاحة حالياً.</p>
+                <p style="color: #ff9999; font-weight: bold; margin-bottom: 20px;">الخدمة غير متاحة حالياً.</p>
             {% endif %}
-
             <button type="button" class="button" onclick="showPhotos()">
-                مشاهدة الصور
+                تصفح أعمالنا
             </button>
+        </div>
+        <div class="hero-visual">
+            <video autoplay loop muted playsinline>
+                <source src="{% static 'e_invites/20.mp4' %}" type="video/mp4">
+            </video>
         </div>
     </section>
 
     <section id="photos-section">
         <div class="section-title">
-            <h2>الصور</h2>
-
-            <p>
-                مجموعة من التصاميم المناسبة لمختلف المناسبات.
-            </p>
+            <h2>معرض الصور</h2>
+            <p>مجموعة من تصاميمنا الأنيقة المناسبة لمختلف المناسبات</p>
         </div>
-
         <div class="products">
             {% for product in products %}
                 {% if product.type == "image" %}
                     <article class="card">
                         <div class="card-image-box">
-                            <img
-                                src="{% static product.file %}"
-                                alt="{{ product.name }}"
-                                onclick="openImage(this.src, this.alt)"
-                            >
+                            <img src="{% static product.file %}" alt="{{ product.name }}" onclick="openImage(this.src, this.alt)">
                         </div>
-
                         <div class="card-content">
                             <h3>{{ product.name|title }}</h3>
-
-                            <p class="price">
-                                {{ product.price }} ريال يمني
-                            </p>
-
-                            <a href="{% url 'e_invites:order' %}" class="button">
-                                اطلب الآن
-                            </a>
+                            <p class="price">{{ product.price }} ريال</p>
+                            <a href="{% url 'e_invites:order' %}" class="button">اطلب التصميم</a>
                         </div>
                     </article>
                 {% endif %}
             {% empty %}
-                <p>لا توجد صور متاحة حالياً.</p>
+                <p style="text-align: center; width: 100%;">لا توجد صور متاحة حالياً.</p>
             {% endfor %}
         </div>
     </section>
 
     <section id="videos-section" class="hidden-section">
         <div class="section-title">
-            <h2>الفيديوهات</h2>
-
-            <p>
-                فيديوهات دعوات إلكترونية لمناسباتكم.
-            </p>
+            <h2>معرض الفيديوهات</h2>
+            <p>أجمل دعوات الفيديو الحركية لتوثيق أفراحكم</p>
         </div>
-
         <div class="products">
             {% for product in products %}
                 {% if product.type == "video" %}
                     <article class="card">
                         <video controls preload="metadata">
-                            <source
-                                src="{% static product.file %}"
-                                type="video/mp4"
-                            >
+                            <source src="{% static product.file %}" type="video/mp4">
                             متصفحك لا يدعم تشغيل الفيديو.
                         </video>
-
                         <div class="card-content">
                             <h3>{{ product.name|title }}</h3>
-
-                            <p class="price">
-                                {{ product.price }} ريال يمني
-                            </p>
-
-                            <a href="{% url 'e_invites:order' %}" class="button">
-                                اطلب الآن
-                            </a>
+                            <p class="price">{{ product.price }} ريال</p>
+                            <a href="{% url 'e_invites:order' %}" class="button">اطلب الفيديو</a>
                         </div>
                     </article>
                 {% endif %}
             {% empty %}
-                <p>لا توجد فيديوهات متاحة حالياً.</p>
+                <p style="text-align: center; width: 100%;">لا توجد فيديوهات متاحة حالياً.</p>
             {% endfor %}
         </div>
     </section>
-
-    <section class="order-banner">
-        <div class="order-box">
-            <h2>{{ order_status|capfirst }}</h2>
-
-            <p>
-                اختر نوع الدعوة أو التصميم، ثم أرسل بيانات طلبك.
-            </p>
-
-            <p>
-                الخدمات: {{ categories|join:"، " }}
-            </p>
-
-            <p>
-                أول قسم: {{ categories|first }}
-                — آخر قسم: {{ categories|last }}</p>
-
-            <p>
-                {{ customer_name|default:"نسعد باستقبال طلبك" }}
-            </p>
-
-            <a href="{% url 'e_invites:order' %}" class="button">
-                إرسال الطلب
-            </a>
-        </div>
-    </section>
-
-    <section>
-        <div class="section-title">
-            <h2>تقييمات العملاء</h2>
-        </div>
-
-        <div class="reviews">
-            {% for review in reviews %}
-                <div class="review">
-                    <div class="review-name">
-                        <h3>{{ review.name|capfirst }}</h3>
-                    </div>
-
-                    <div class="review-message">
-                        <p>{{ review.message|truncatewords:20 }}</p>
-                    </div>
-                </div>
-            {% endfor %}
-        </div>
-    </section>
-
 </main>
 
 <div id="image-modal" class="image-modal" onclick="closeImageOutside(event)">
     <div class="modal-content">
-        <button
-            type="button"
-            class="close-modal"
-            onclick="closeImage()"
-            aria-label="إغلاق"
-        >
-            ×
-        </button>
-
+        <button type="button" class="close-modal" onclick="closeImage()">×</button>
         <img id="modal-image" src="" alt="">
     </div>
 </div>
 
 <footer>
-    <p>
-        {{ site_name|lower }}
-        © {{ current_date|date:"Y" }}
-    </p>
+    <p>{{ site_name|upper }} © {{ current_date|date:"Y" }} جميع الحقوق محفوظة</p>
 </footer>
 
 <script>
     function showPhotos() {
-        const photosSection = document.getElementById("photos-section");
-        const videosSection = document.getElementById("videos-section");
-
-        photosSection.classList.remove("hidden-section");
-        videosSection.classList.add("hidden-section");
-
-        photosSection.scrollIntoView({
-            behavior: "smooth",
-            block: "start"
-        });
+        document.getElementById("photos-section").classList.remove("hidden-section");
+        document.getElementById("videos-section").classList.add("hidden-section");
+        document.getElementById("photos-section").scrollIntoView({ behavior: "smooth", block: "start" });
     }
-
     function showVideos() {
-        const photosSection = document.getElementById("photos-section");
-        const videosSection = document.getElementById("videos-section");
-
-        photosSection.classList.add("hidden-section");
-        videosSection.classList.remove("hidden-section");
-
-        videosSection.scrollIntoView({
-            behavior: "smooth",
-            block: "start"
-        });
+        document.getElementById("photos-section").classList.add("hidden-section");
+        document.getElementById("videos-section").classList.remove("hidden-section");
+        document.getElementById("videos-section").scrollIntoView({ behavior: "smooth", block: "start" });
     }
-
-    function openImage(imageSource, imageAlt) {
-        const modal = document.getElementById("image-modal");
-        const modalImage = document.getElementById("modal-image");
-
-        modalImage.src = imageSource;
-        modalImage.alt = imageAlt;
-        modal.classList.add("show");
-
+    function openImage(src, alt) {
+        document.getElementById("modal-image").src = src;
+        document.getElementById("modal-image").alt = alt;
+        document.getElementById("image-modal").classList.add("show");
         document.body.style.overflow = "hidden";
     }
-
     function closeImage() {
-        const modal = document.getElementById("image-modal");
-        const modalImage = document.getElementById("modal-image");
-
-        modal.classList.remove("show");
-        modalImage.src = "";
-
+        document.getElementById("image-modal").classList.remove("show");
+        document.getElementById("modal-image").src = "";
         document.body.style.overflow = "";
     }
-
-    function closeImageOutside(event) {
-        if (event.target.id === "image-modal") {
-            closeImage();
-        }
-    }
-
-    document.addEventListener("keydown", function(event) {
-        if (event.key === "Escape") {
-            closeImage();
-        }
-    });
+    function closeImageOutside(event) { if (event.target.id === "image-modal") closeImage(); }
+    document.addEventListener("keydown", function(e) { if (e.key === "Escape") closeImage(); });
 </script>
 
 </body>
