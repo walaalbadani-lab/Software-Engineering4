@@ -1,14 +1,11 @@
 {% load static %}
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ arabic_name|title }} | الرئيسية</title>
-
+    <title>دعوات إلكترونية | الرئيسية</title>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;800&display=swap" rel="stylesheet">
-
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; }
         html { scroll-behavior: smooth; }
@@ -23,228 +20,215 @@
             content: "";
             position: fixed;
             inset: 0;
-            background: url("{% static 'e_invites/22.jpg' %}") center/430px repeat;
-            opacity: 0.04;
-            pointer-events: none;
+            background: url("{% static 'e_invites/22.jpg' %}") center/cover repeat;
+            opacity: 0.17;
             z-index: -1;
+            background-attachment: fixed;
         }
         header {
             background: #4a3228;
-            padding: 12px 8%;
+            padding: 15px 8%;
             display: flex;
             justify-content: space-between;
             align-items: center;
             position: sticky;
             top: 0;
             z-index: 1000;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
         }
         .brand { display: flex; align-items: center; gap: 15px; color: white; }
         .brand img {
-            width: 60px; height: 60px; object-fit: cover; border-radius: 50%;
-            border: 2px solid #d8b58d; box-shadow: 0 0 10px rgba(216, 181, 141, 0.4);
+            width: 65px; height: 65px; object-fit: cover; border-radius: 50%;
+            border: 3px solid #d8b58d;
         }
-        .brand h2 { font-size: 22px; font-weight: 800; margin-bottom: -5px; }
-        .brand small { color: #e7d3bc; font-weight: 600; }
-        nav { display: flex; gap: 20px; }
+        nav { display: flex; gap: 12px; flex-wrap: wrap; }
         nav a {
             color: white; text-decoration: none; font-weight: 600;
-            padding: 8px 16px; border-radius: 8px; transition: all 0.3s ease; cursor: pointer;
+            padding: 10px 18px; border-radius: 8px; transition: 0.3s; cursor: pointer;
         }
-        nav a:hover { background: rgba(216, 181, 141, 0.15); color: #d8b58d; transform: translateY(-2px); }
+        nav a:hover { background: rgba(216, 181, 141, 0.25); color: #d8b58d; }
+
+        .search-bar-top { background:#4a3228; padding:20px; text-align:center; }
+        .search-bar-top input { padding:12px 20px; width:360px; border:none; border-radius:30px; background:#f0e6d8; font-size:16px; }
 
         .hero-modern {
             display: flex; align-items: center; justify-content: space-between;
             min-height: 85vh; padding: 60px 8%;
             background: linear-gradient(135deg, #4a3228 0%, #2f211b 100%);
-            color: white; position: relative; overflow: hidden;
+            color: white;
         }
-        .hero-text { flex: 1; max-width: 600px; z-index: 2; }
-        .hero-text h1 { font-size: 60px; font-weight: 800; color: #d8b58d; margin-bottom: 20px; line-height: 1.2; }
+        .hero-text h1 { font-size: 58px; color: #d8b58d; margin-bottom: 20px; }
         .hero-text p { font-size: 20px; color: #e7d3bc; margin-bottom: 30px; }
-        
-        .hero-visual { flex: 1; display: flex; justify-content: center; position: relative; z-index: 2; }
-        .hero-visual video {
-            width: 100%; max-width: 400px; border-radius: 20px;
-            box-shadow: 0 20px 50px rgba(0,0,0,0.5); border: 4px solid #a77953;
-            transform: rotate(-3deg); transition: 0.5s;
-        }
-        .hero-visual video:hover { transform: rotate(0deg) scale(1.02); }
-
         .button {
-            display: inline-block; padding: 14px 35px; background: linear-gradient(135deg, #a77953, #8c5d3a);
-            color: white; text-decoration: none; font-weight: 700; font-size: 17px;
-            border-radius: 30px; border: none; cursor: pointer; transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(167, 121, 83, 0.4);
+            padding: 14px 35px; background: linear-gradient(135deg, #a77953, #8c5d3a);
+            color: white; font-weight: 700; border-radius: 30px; border: none; cursor: pointer;
         }
-        .button:hover { transform: scale(1.05); box-shadow: 0 6px 20px rgba(167, 121, 83, 0.6); }
+        .button:hover { transform: scale(1.05); }
 
         section { padding: 80px 8%; }
         .section-title { text-align: center; margin-bottom: 50px; }
         .section-title h2 { font-size: 38px; color: #4a3228; font-weight: 800; position: relative; display: inline-block; }
-        .section-title h2::after { content: ''; width: 50%; height: 3px; background: #a77953; position: absolute; bottom: -5px; left: 25%; border-radius: 5px; }
-        
-        .products { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 30px; max-width: 1200px; margin: auto; }
-        .card { background: #fff; border-radius: 20px; overflow: hidden; box-shadow: 0 10px 30px rgba(72, 46, 36, 0.08); transition: all 0.4s ease; border: 1px solid #f0e6d8; }
-        .card:hover { transform: translateY(-10px); box-shadow: 0 15px 40px rgba(167, 121, 83, 0.2); border-color: #d8b58d; }
-        .card-image-box { height: 280px; overflow: hidden; background: #f1e8de; position: relative; }
-        .card-image-box img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.6s ease; cursor: pointer; }
-        .card:hover .card-image-box img { transform: scale(1.1); }
-        .card video { width: 100%; height: 280px; object-fit: cover; background: #2f211b; }
-        .card-content { padding: 25px; text-align: center; }
-        .card-content h3 { color: #4a3228; font-size: 22px; font-weight: 800; margin-bottom: 10px; }
-        .price { color: #a77953; font-size: 24px; font-weight: 800; margin-bottom: 20px; background: #fdfaf6; padding: 5px 15px; border-radius: 10px; display: inline-block; border: 1px dashed #d8b58d; }
-        .card .button { width: 100%; }
+        .section-title h2::after { content: ''; width: 70px; height: 4px; background: #a77953; position: absolute; bottom: -10px; left: 50%; transform: translateX(-50%); }
+
+        .products { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 30px; max-width: 1350px; margin: auto; }
+        .card { background: white; border-radius: 20px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.1); transition: 0.4s; }
+        .card:hover { transform: translateY(-12px); box-shadow: 0 20px 40px rgba(167,121,83,0.3); }
+        .card-image-box { height: 280px; overflow: hidden; }
+        .card-image-box img { width: 100%; height: 100%; object-fit: cover; transition: 0.5s; cursor: pointer; }
+        .card:hover img { transform: scale(1.08); }
+        .card-content { padding: 20px; text-align: center; }
+        .price { color: #a77953; font-size: 24px; font-weight: 800; margin: 12px 0; }
 
         .hidden-section { display: none; }
-        .image-modal { display: none; position: fixed; inset: 0; z-index: 3000; background: rgba(0, 0, 0, 0.9); align-items: center; justify-content: center; padding: 30px; }
+        .image-modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.92); align-items:center; justify-content:center; z-index: 10000; }
         .image-modal.show { display: flex; }
-        .modal-content { position: relative; max-width: 900px; width: 100%; height: 90vh; display: flex; justify-content: center; align-items: center; }
-        .modal-content img { max-width: 100%; max-height: 100%; object-fit: contain; border-radius: 10px; border: 2px solid #a77953; }
-        .close-modal { position: absolute; top: -20px; right: -20px; width: 50px; height: 50px; border: none; border-radius: 50%; background: #a77953; color: white; font-size: 35px; cursor: pointer; z-index: 2; transition: 0.3s; }
-        .close-modal:hover { background: #8c5d3a; transform: scale(1.1); }
-        
-        footer { background: #2f211b; color: #e7d3bc; text-align: center; padding: 25px; font-weight: 600; border-top: 4px solid #a77953; }
-
-        @media (max-width: 768px) {
-            header { flex-direction: column; padding: 15px; gap: 15px; }
-            nav { width: 100%; justify-content: space-around; flex-wrap: wrap; }
-            .hero-modern { flex-direction: column; text-align: center; padding-top: 40px; }
-            .hero-text h1 { font-size: 40px; }
-            .hero-visual video { transform: rotate(0); margin-top: 30px; max-width: 80%; }
-        }
+        .modal-content img { max-width: 90%; max-height: 90%; border: 6px solid #d8b58d; border-radius: 15px; }
+        .new-section { max-width: 700px; margin: 30px auto; background: white; padding: 40px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); border-top: 5px solid #a77953; }
+        footer { background: #2f211b; color: #e7d3bc; text-align: center; padding: 30px; margin-top: 50px; }
     </style>
 </head>
-
 <body>
 
 <header>
     <div class="brand">
-        <img src="{% static 'e_invites/22.jpg' %}" alt="شعار دعوات إلكترونية">
-        <div>
-            <h2>{{ arabic_name|capfirst }}</h2>
-            <small>{{ site_name|upper }}</small>
-        </div>
+        <img src="{% static 'e_invites/22.jpg' %}" alt="شعار">
+        <div><h2>دعوات إلكترونية</h2><small>WALA</small></div>
     </div>
-
     <nav>
-        <a href="{% url 'e_invites:home' %}">الرئيسية</a>
+        <a href="#home">الرئيسية</a>
         <a onclick="showPhotos()">الصور</a>
         <a onclick="showVideos()">الفيديوهات</a>
-        <a href="{% url 'e_invites:order' %}">الطلب</a>
-        <a href="{% url 'e_invites:about' %}">من نحن</a>
+        <a onclick="showNewSection('filter')">بحث</a>
+        <a onclick="showNewSection('register')">تسجيل</a>
+        <a onclick="showNewSection('login')">دخول</a>
+        <a onclick="showNewSection('order')">طلب</a>
     </nav>
 </header>
 
 <main>
     <section class="hero-modern" id="home">
         <div class="hero-text">
-            <h1>{{ arabic_name|title }}</h1>
-            <p>نصمم دعوات إلكترونية، فيديوهات احترافية، وورقيات تليق بفخامة مناسباتكم السعيدة وتوثق أجمل اللحظات.</p>
-            {% if service_available %}
-                <p style="color: #a77953; font-weight: bold; margin-bottom: 20px;">{{ service_message }}</p>
-            {% else %}
-                <p style="color: #ff9999; font-weight: bold; margin-bottom: 20px;">الخدمة غير متاحة حالياً.</p>
-            {% endif %}
-            <button type="button" class="button" onclick="showPhotos()">
-                تصفح أعمالنا
-            </button>
+            <h1>دعوات إلكترونية</h1>
+            <p>نصمم دعوات إلكترونية، فيديوهات احترافية، وورقيات تليق بفخامة مناسباتكم السعيدة.</p>
+            <button class="button" onclick="showPhotos()">تصفح أعمالنا</button>
         </div>
         <div class="hero-visual">
-            <video autoplay loop muted playsinline>
+            <video autoplay loop muted playsinline style="max-width:420px;border-radius:20px;box-shadow:0 20px 50px rgba(0,0,0,0.6);">
                 <source src="{% static 'e_invites/20.mp4' %}" type="video/mp4">
             </video>
         </div>
     </section>
 
+    <div class="search-bar-top">
+        <form method="GET" action="#photos-section">
+            <input type="text" name="search" placeholder="ابحث مثل: زفاف، تخرج، عيد..." value="{{ search_query }}">
+            <button type="submit" class="button">بحث</button>
+        </form>
+        {% if search_query %}
+            <p style="color:#d8b58d; margin-top:15px;">نتائج البحث عن: <strong>{{ search_query }}</strong> — {{ total_count }} نتيجة</p>
+        {% endif %}
+    </div>
+
+    <!-- عرض رسائل النجاح والخطأ -->
+    {% if message %}
+    <div style="text-align:center; padding:15px; margin:15px auto; max-width:600px; border-radius:12px; 
+        {% if message_type == 'success' %}background:#d4edda;color:#155724;{% else %}background:#f8d7da;color:#721c24;{% endif %}">
+        <strong>{{ message }}</strong>
+    </div>
+    {% endif %}
+
     <section id="photos-section">
         <div class="section-title">
             <h2>معرض الصور</h2>
-            <p>مجموعة من تصاميمنا الأنيقة المناسبة لمختلف المناسبات</p>
+            <p>مجموعة من تصاميمنا + المنتجات المضافة من قاعدة البيانات</p>
         </div>
         <div class="products">
+
+            {% for item in static_products %}
+            <article class="card">
+                <div class="card-image-box">
+                    <img src="{% static item.img %}" onclick="openImage(this.src)">
+                </div>
+                <div class="card-content">
+                    <h3>{{ item.name }}</h3>
+                    <p class="price">{{ item.price }} ريال</p>
+                    <button class="button" onclick="showNewSection('order')">اطلب التصميم</button>
+                </div>
+            </article>
+            {% endfor %}
+
             {% for product in products %}
-                {% if product.type == "image" %}
-                    <article class="card">
-                        <div class="card-image-box">
-                            <img src="{% static product.file %}" alt="{{ product.name }}" onclick="openImage(this.src, this.alt)">
-                        </div>
-                        <div class="card-content">
-                            <h3>{{ product.name|title }}</h3>
-                            <p class="price">{{ product.price }} ريال</p>
-                            <a href="{% url 'e_invites:order' %}" class="button">اطلب التصميم</a>
-                        </div>
-                    </article>
-                {% endif %}
-            {% empty %}
-                <p style="text-align: center; width: 100%;">لا توجد صور متاحة حالياً.</p>
+            <article class="card">
+                <div class="card-image-box">
+                    {% if product.image %}<img src="{{ product.image.url }}" onclick="openImage(this.src)">{% endif %}
+                </div>
+                <div class="card-content">
+                    <h3>{{ product.name }}</h3>
+                    <p class="price">{{ product.price }} ريال</p>
+                    {% if product.description %}<p style="font-size:14px;color:#555;margin-top:8px;">{{ product.description|truncatechars:80 }}</p>{% endif %}
+                    <button class="button" onclick="showNewSection('order')" style="width:100%;margin-top:12px;">اطلب التصميم</button>
+                </div>
+            </article>
             {% endfor %}
         </div>
     </section>
 
-    <section id="videos-section" class="hidden-section">
-        <div class="section-title">
-            <h2>معرض الفيديوهات</h2>
-            <p>أجمل دعوات الفيديو الحركية لتوثيق أفراحكم</p>
+    <!-- أقسام التسجيل والدخول -->
+    <section id="register-section" class="hidden-section">
+        <div class="new-section">
+            <h2>إنشاء حساب جديد</h2>
+            <form method="post">{% csrf_token %}
+                <input type="hidden" name="action" value="register">
+                <label>اسم المستخدم</label><input type="text" name="username" required>
+                <label>البريد الإلكتروني</label><input type="email" name="email" required>
+                <label>كلمة المرور</label><input type="password" name="password" required>
+                <button type="submit" class="button" style="width:100%;">تسجيل حساب</button>
+            </form>
         </div>
-        <div class="products">
-            {% for product in products %}
-                {% if product.type == "video" %}
-                    <article class="card">
-                        <video controls preload="metadata">
-                            <source src="{% static product.file %}" type="video/mp4">
-                            متصفحك لا يدعم تشغيل الفيديو.
-                        </video>
-                        <div class="card-content">
-                            <h3>{{ product.name|title }}</h3>
-                            <p class="price">{{ product.price }} ريال</p>
-                            <a href="{% url 'e_invites:order' %}" class="button">اطلب الفيديو</a>
-                        </div>
-                    </article>
-                {% endif %}
-            {% empty %}
-                <p style="text-align: center; width: 100%;">لا توجد فيديوهات متاحة حالياً.</p>
-            {% endfor %}
+    </section>
+
+    <section id="login-section" class="hidden-section">
+        <div class="new-section">
+            <h2>تسجيل الدخول</h2>
+            <form method="post">{% csrf_token %}
+                <input type="hidden" name="action" value="login">
+                <label>البريد الإلكتروني</label><input type="email" name="email" required>
+                <label>كلمة المرور</label><input type="password" name="password" required>
+                <button type="submit" class="button" style="width:100%;">دخول</button>
+            </form>
         </div>
     </section>
 </main>
 
-<div id="image-modal" class="image-modal" onclick="closeImageOutside(event)">
+<!-- Modal لعرض الصور -->
+<div id="image-modal" class="image-modal" onclick="if(event.target.id==='image-modal')closeImage()">
     <div class="modal-content">
-        <button type="button" class="close-modal" onclick="closeImage()">×</button>
-        <img id="modal-image" src="" alt="">
+        <img id="modal-image" src="">
+        <button class="close-modal" onclick="closeImage()">×</button>
     </div>
 </div>
 
-<footer>
-    <p>{{ site_name|upper }} © {{ current_date|date:"Y" }} جميع الحقوق محفوظة</p>
-</footer>
+<footer>© 2026 - جميع الحقوق محفوظة | دعوات إلكترونية</footer>
 
 <script>
-    function showPhotos() {
-        document.getElementById("photos-section").classList.remove("hidden-section");
-        document.getElementById("videos-section").classList.add("hidden-section");
-        document.getElementById("photos-section").scrollIntoView({ behavior: "smooth", block: "start" });
+    function showPhotos() { hideAll(); document.getElementById("photos-section").classList.remove("hidden-section"); document.getElementById("photos-section").scrollIntoView({behavior:"smooth"}); }
+    function showVideos() { hideAll(); document.getElementById("videos-section").classList.remove("hidden-section"); document.getElementById("videos-section").scrollIntoView({behavior:"smooth"}); }
+    function showNewSection(id) { 
+        hideAll(); 
+        let sec = document.getElementById(id + "-section"); 
+        if(sec) { sec.classList.remove("hidden-section"); sec.scrollIntoView({behavior:"smooth"}); }
     }
-    function showVideos() {
-        document.getElementById("photos-section").classList.add("hidden-section");
-        document.getElementById("videos-section").classList.remove("hidden-section");
-        document.getElementById("videos-section").scrollIntoView({ behavior: "smooth", block: "start" });
+    function hideAll() {
+        document.querySelectorAll('.hidden-section').forEach(el => el.classList.add("hidden-section"));
     }
-    function openImage(src, alt) {
+    function openImage(src) {
         document.getElementById("modal-image").src = src;
-        document.getElementById("modal-image").alt = alt;
         document.getElementById("image-modal").classList.add("show");
-        document.body.style.overflow = "hidden";
     }
     function closeImage() {
         document.getElementById("image-modal").classList.remove("show");
-        document.getElementById("modal-image").src = "";
-        document.body.style.overflow = "";
     }
-    function closeImageOutside(event) { if (event.target.id === "image-modal") closeImage(); }
-    document.addEventListener("keydown", function(e) { if (e.key === "Escape") closeImage(); });
+    document.addEventListener("keydown", e => { if (e.key === "Escape") closeImage(); });
 </script>
-
 </body>
 </html>
