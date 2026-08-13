@@ -1,0 +1,221 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>دعوات الكترونيه🐆</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root { --brown:#3a2119; --gold:#d7b57a; --card:rgba(255,248,241,.88); --text:#2b1812; --muted:#8a6a56; }
+    :root[data-theme="dark"] { --card:rgba(36,20,16,.86); --text:#f4e9dd; --muted:#cbb39e; }
+    * { box-sizing:border-box; margin:0; padding:0; }
+    html, body { min-height:100%; }
+    body { font-family:"Cairo",Tahoma,sans-serif; color:var(--text); background:#ead9c8; }
+    body::before { content:""; position:fixed; inset:0; background:url("{% static 'e_invites/22.jpg' %}") center/cover no-repeat; opacity:.18; pointer-events:none; z-index:0; }
+    :root[data-theme="dark"] body { background:#160d0a; }
+    :root[data-theme="dark"] body::before { opacity:.12; }
+    .app { position:relative; z-index:1; min-height:100vh; }
+    img, video { max-width:100%; display:block; }
+    a { color:inherit; text-decoration:none; }
+    button, input { font:inherit; cursor:pointer; }
+
+    .topbar {
+      position:sticky; top:0; z-index:20;
+      display:flex; align-items:center; gap:12px;
+      padding:12px 18px;
+      background:rgba(58,33,25,.88);
+      color:#f6eee4;
+    }
+    .brand {
+      display:flex; align-items:center; gap:10px;
+    }
+    .brand img {
+      width:46px; height:46px; border-radius:50%;
+      object-fit:cover; border:2px solid var(--gold); background:#1b100c;
+    }
+    .brand b { display:block; font-size:.95rem; }
+    .brand span { display:block; color:var(--gold); font-size:.75rem; direction:ltr; text-align:right; }
+    .left-tools {
+      margin-right:auto; display:flex; align-items:center; gap:8px;
+    }
+    .search { width:min(280px,42vw); }
+    .search input {
+      width:100%; border:0; border-radius:999px; padding:10px 14px; background:#fff8f1; color:#23140f;
+    }
+    .dots, .bell {
+      width:42px; height:42px; border:1px solid rgba(215,181,122,.3);
+      border-radius:12px; background:transparent; color:#f6eee4; font-size:20px; position:relative;
+    }
+    .badge {
+      position:absolute; top:-4px; left:-4px; min-width:17px; height:17px;
+      padding:0 4px; border-radius:999px; background:var(--gold); color:#2b1812;
+      font-size:10px; font-weight:800; display:grid; place-items:center;
+    }
+    .note {
+      display:none; text-align:center; color:var(--gold); padding:7px;
+      font-size:.82rem; background:rgba(36,20,16,.72);
+    }
+    .note.show { display:block; }
+
+    .overlay { position:fixed; inset:0; background:rgba(0,0,0,.35); border:0; display:none; z-index:30; }
+    .overlay.show { display:block; }
+    .sidebar {
+      position:fixed; top:0; right:-240px; width:228px; height:100%;
+      background:rgba(26,14,11,.97); color:#f6eee4;
+      padding:58px 12px 18px; z-index:40; transition:.22s;
+    }
+    .sidebar.open { right:0; }
+    .sidebar a, .theme-btn {
+      display:block; width:100%; text-align:right; color:#f6eee4;
+      background:none; border:0; padding:9px 11px; border-radius:10px;
+      margin-bottom:4px; font-size:.9rem;
+    }
+    .sidebar a:hover { background:rgba(215,181,122,.14); color:var(--gold); }
+    .theme-btn { margin-top:10px; border:1px solid rgba(215,181,122,.3); border-radius:999px; text-align:center; }
+    .ig {
+      display:flex; align-items:center; gap:10px; margin:8px 0; padding:8px 10px;
+      border:1px solid rgba(215,181,122,.2); border-radius:12px;
+    }
+    .ig .mark {
+      width:34px; height:34px; border-radius:10px; display:grid; place-items:center;
+      background:linear-gradient(135deg,#f9d29d,#c08a4d); color:#3a2119; font-weight:800; font-size:.72rem;
+    }
+    .ig span { display:block; color:#d4c0aa; font-size:.72rem; direction:ltr; text-align:right; }
+
+    .notif {
+      position:fixed; top:72px; left:16px; z-index:50; width:min(340px,calc(100% - 32px));
+      display:none; padding:14px; background:var(--card); border-radius:16px; box-shadow:0 16px 36px rgba(0,0,0,.18);
+    }
+    .notif.show { display:block; }
+    .notif h4 { margin-bottom:8px; }
+    .notif-item { padding:8px 0; border-bottom:1px solid rgba(139,94,60,.15); font-size:.82rem; }
+    .notif-item span { color:var(--muted); font-size:.74rem; }
+
+    .page { width:min(1240px,94%); margin:0 auto; padding:28px 0 70px; }
+    .grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(260px,1fr)); gap:22px; }
+    .card {
+      background:var(--card); border:1px solid rgba(215,181,122,.18); border-radius:22px;
+      overflow:hidden; box-shadow:0 14px 32px rgba(47,27,20,.10);
+    }
+    .card img, .card video { width:100%; height:240px; object-fit:cover; cursor:zoom-in; }
+    .card-body { padding:16px 18px 18px; }
+    .card h3 { font-size:1.1rem; }
+    .price { color:#8b5a3c; font-weight:800; margin:8px 0 12px; }
+    .btn { display:inline-block; background:var(--brown); color:#f6eee4; border-radius:999px; padding:8px 16px; font-size:.88rem; font-weight:700; }
+    .hidden { display:none !important; }
+    .footer { text-align:center; padding:16px; color:#6b5344; font-size:.78rem; }
+
+    .lightbox { position:fixed; inset:0; z-index:100; background:rgba(18,10,8,.86); backdrop-filter:blur(8px); display:flex; align-items:center; justify-content:center; opacity:0; pointer-events:none; transition:.25s; }
+    .lightbox.show { opacity:1; pointer-events:all; }
+    .lightbox img, .lightbox video { max-width:90%; max-height:82vh; border-radius:16px; box-shadow:0 20px 50px rgba(0,0,0,.45); }
+    .lb-x { position:absolute; top:18px; right:18px; width:44px; height:44px; border:0; border-radius:50%; background:rgba(255,255,255,.12); color:#fff; font-size:22px; }
+    .lb-x:hover { background:rgba(255,255,255,.25); color:var(--gold); }
+
+    @media (max-width:700px) {
+      .brand span { display:none; }
+      .search { width:min(160px,40vw); }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <header class="topbar">
+      <a class="brand" href="{% url 'home' %}">
+        <img src="{% static 'e_invites/22.jpg' %}" alt="_4cioq">
+        <div><b>دعوات الكترونيه🐆</b><span>_4cioq</span></div>
+      </a>
+      <div class="left-tools">
+        <form class="search" id="searchForm">
+          <input id="inviteSearch" type="search" value="{{ q }}" placeholder="بحث">
+        </form>
+        <button class="bell" id="bellBtn" type="button">⌂{% if notification_count %}<span class="badge">{{ notification_count }}</span>{% endif %}</button>
+        <button class="dots" id="menuBtn" type="button">⋯</button>
+      </div>
+    </header>
+
+    <div class="note" id="resultNote"></div>
+
+    <div class="notif" id="notifPanel">
+      <h4>الإشعارات</h4>
+      {% if user.is_authenticated %}
+        {% for item in notifications %}
+          <div class="notif-item">
+            <b>{{ item.occasion }}</b>{% if item.price %} · {{ item.price }} ر.ي{% endif %}<br>
+            <span>{{ item.place }} · {{ item.created_at|date:"Y/m/d H:i" }}</span>
+          </div>
+        {% empty %}
+          <div class="notif-item"><span>لا توجد طلبات بعد</span></div>
+        {% endfor %}
+      {% else %}
+        <div class="notif-item"><span>الطلبات تظهر هنا بعد الإرسال</span></div>
+      {% endif %}
+    </div>
+
+    <button class="overlay" id="overlay" type="button"></button>
+    <aside class="sidebar" id="sidebar">
+      <a href="{% url 'home' %}">الرئيسية</a>
+      <a href="{% url 'about' %}">حول</a>
+      <a href="{% url 'order' %}">طلب</a>
+      {% if user.is_authenticated %}
+        <a href="{% url 'logout' %}">خروج ({{ user.username }})</a>
+      {% else %}
+        <a href="{% url 'login' %}">دخول</a>
+        <a href="{% url 'register' %}">تسجيل</a>
+      {% endif %}
+      <a class="ig" href="https://instagram.com/_4cioq" target="_blank" rel="noopener"><div class="mark">IG</div><div><b>Instagram</b><span>_4cioq</span></div></a>
+      <a class="ig" href="https://tiktok.com/@_4cioq" target="_blank" rel="noopener"><div class="mark">TT</div><div><b>TikTok</b><span>_4cioq</span></div></a>
+      <button class="theme-btn" id="themeBtn" type="button">ليلي</button>
+    </aside>
+
+    <main class="page">
+      <div class="grid">
+        <article class="card" data-invite="رسم رقمي"><img src="{% static 'e_invites/10.jpg' %}" alt=""><div class="card-body"><h3>رسم رقمي</h3><div class="price">1000 ر.ي</div><a class="btn" href="{% url 'order' %}?product=رسم رقمي">طلب</a></div></article>
+        <article class="card" data-invite="مواليد"><img src="{% static 'e_invites/11.jpg' %}" alt=""><div class="card-body"><h3>مواليد</h3><div class="price">1000 ر.ي</div><a class="btn" href="{% url 'order' %}?product=مواليد">طلب</a></div></article>
+        <article class="card" data-invite="زفاف"><img src="{% static 'e_invites/19.jpg' %}" alt=""><div class="card-body"><h3>زفاف</h3><div class="price">1000 ر.ي</div><a class="btn" href="{% url 'order' %}?product=زفاف">طلب</a></div></article>
+        <article class="card" data-invite="تخرج"><img src="{% static 'e_invites/23.jpg' %}" alt=""><div class="card-body"><h3>تخرج</h3><div class="price">1000 ر.ي</div><a class="btn" href="{% url 'order' %}?product=تخرج">طلب</a></div></article>
+        <article class="card" data-invite="فيديو"><video muted playsinline preload="metadata" data-full="{% static 'e_invites/20.mp4' %}"><source src="{% static 'e_invites/20.mp4' %}" type="video/mp4"></video><div class="card-body"><h3>فيديو</h3><div class="price">300 ر.ي</div><a class="btn" href="{% url 'order' %}?product=فيديو">طلب</a></div></article>
+        <article class="card" data-invite="جرائد وورقيات ورق جريدة"><img src="{% static 'e_invites/18.jpg' %}" alt=""><div class="card-body"><h3>جرائد وورقيات</h3><div class="price">500 ر.ي</div><a class="btn" href="{% url 'order' %}?product=جرائد وورقيات">طلب</a></div></article>
+
+        {% for product in products %}
+        <article class="card" data-invite="{{ product.title }}">
+          {% if product.image %}<img src="{{ product.image.url }}" alt="">{% else %}<img src="{% static 'e_invites/22.jpg' %}" alt="">{% endif %}
+          <div class="card-body"><h3>{{ product.title }}</h3><div class="price">{% if product.price %}{{ product.price }}{% else %}1000{% endif %} ر.ي</div><a class="btn" href="{% url 'order' %}?product={{ product.title }}">طلب</a></div>
+        </article>
+        {% endfor %}
+      </div>
+    </main>
+    <footer class="footer">دعوات الكترونيه🐆 · _4cioq</footer>
+  </div>
+
+  <div class="lightbox" id="lbImgBox"><button class="lb-x" type="button" data-close>✖</button><img id="lbImg" alt=""></div>
+  <div class="lightbox" id="lbVidBox"><button class="lb-x" type="button" data-close>✖</button><video id="lbVid" controls playsinline></video></div>
+
+  <script>
+    const sidebar=document.getElementById("sidebar"), overlay=document.getElementById("overlay"), notif=document.getElementById("notifPanel");
+    const closeSide=()=>{sidebar.classList.remove("open"); overlay.classList.remove("show");};
+    document.getElementById("menuBtn").onclick=()=>{notif.classList.remove("show");sidebar.classList.add("open");overlay.classList.add("show");};
+    document.getElementById("bellBtn").onclick=()=>{closeSide(); notif.classList.toggle("show");};
+    overlay.onclick=()=>{closeSide(); notif.classList.remove("show");};
+
+    const themeBtn=document.getElementById("themeBtn");
+    const saved=localStorage.getItem("theme")||"light";
+    document.documentElement.setAttribute("data-theme",saved);
+    themeBtn.textContent=saved==="dark"?"نهاري":"ليلي";
+    themeBtn.onclick=()=>{const n=document.documentElement.getAttribute("data-theme")==="dark"?"light":"dark"; document.documentElement.setAttribute("data-theme",n); localStorage.setItem("theme",n); themeBtn.textContent=n==="dark"?"نهاري":"ليلي";};
+
+    document.getElementById("searchForm").addEventListener("submit",e=>e.preventDefault());
+    const search=document.getElementById("inviteSearch"), note=document.getElementById("resultNote");
+    function filterCards(q){q=(q||"").trim();let n=0;document.querySelectorAll("[data-invite]").forEach(c=>{const ok=!q||c.dataset.invite.includes(q);c.classList.toggle("hidden",!ok);if(ok)n++;});note.classList.toggle("show",!!q);note.textContent=q?(n?q+" · "+n:"لا توجد نتائج"):"";}
+    filterCards(search.value); search.addEventListener("input",()=>filterCards(search.value));
+
+    const lbI=document.getElementById("lbImgBox"), lbV=document.getElementById("lbVidBox"), lbImg=document.getElementById("lbImg"), lbVid=document.getElementById("lbVid");
+    function closeLb(){lbI.classList.remove("show");lbV.classList.remove("show");lbVid.pause();lbVid.removeAttribute("src");}
+    document.querySelectorAll(".card img").forEach(i=>i.addEventListener("click",()=>{lbImg.src=i.src;lbI.classList.add("show");}));
+    document.querySelectorAll(".card video").forEach(v=>v.addEventListener("click",()=>{lbVid.src=v.dataset.full||v.querySelector("source").src;lbV.classList.add("show");lbVid.play();}));
+    document.querySelectorAll("[data-close]").forEach(b=>b.onclick=closeLb);
+    lbI.onclick=e=>{if(e.target===lbI)closeLb();};
+    lbV.onclick=e=>{if(e.target===lbV)closeLb();};
+  </script>
+</body>
+</html>

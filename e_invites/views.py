@@ -1,84 +1,80 @@
-from django.shortcuts import render, redirect
-from django.contrib.auth.models import User
-from django.contrib.auth import authenticate, login, logout
-from django.db.models import Q
+from django.contrib import messages
+from django.shortcuts import redirect, render
+from django.utils.dateparse import parse_date
+
+from .models import Order
 from products.models import Product
-from account.models import UserAccount
+
+
+PRICES = {
+    "رسم رقمي": 1000,
+    "مواليد": 1000,
+    "زفاف": 1000,
+    "تخرج": 1000,
+    "فيديو": 300,
+    "جرائد وورقيات": 500,
+}
+
 
 def home(request):
-    search_query = request.GET.get('search', '').strip()
-    message = None
-    message_type = None
+    notes = list(Order.objects.all()[:8])
+
+    return render(request, "e_invites/home.html", {
+        "products": Product.objects.all(),
+        "q": (request.GET.get("q") or "").strip(),
+        "notifications": notes,
+        "notification_count": Order.objects.count(),
+    })
+
+
+def about(request):
+    return render(request, "e_invites/about.html")
+
+
+def product_list(request):
+    return redirect("home")
+
+
+def order(request):
+    selected = (
+        request.POST.get("occasion")
+        or request.GET.get("product")
+        or ""
+    ).strip()
 
     if request.method == "POST":
-        action = request.POST.get('action')
+        price = PRICES.get(selected)
 
-        # تسجيل حساب جديد
-        if action == 'register':
-            username = request.POST.get('username')
-            email = request.POST.get('email')
-            password = request.POST.get('password')
+        if price is None:
+            product = Product.objects.filter(title=selected).first()
+            if product is None:
+                product = Product.objects.filter(name=selected).first()
+            price = int(getattr(product, "price", 0) or 0) if product else None
 
-            if User.objects.filter(username=username).exists():
-                message = "اسم المستخدم موجود مسبقاً"
-                message_type = "error"
-            elif User.objects.filter(email=email).exists():
-                message = "البريد الإلكتروني مستخدم من قبل"
-                message_type = "error"
-            else:
-                user = User.objects.create_user(username=username, email=email, password=password)
-                UserAccount.objects.create(user=user)   # حفظ في قاعدة البيانات
-                message = "تم التسجيل بنجاح! يمكنك تسجيل الدخول الآن"
-                message_type = "success"
+        event_date = parse_date(request.POST.get("date") or "")
+        phone = request.POST.get("phone", "").strip()
+        place = request.POST.get("place", "").strip()
 
-        # تسجيل الدخول
-        elif action == 'login':
-            email = request.POST.get('email')
-            password = request.POST.get('password')
-            try:
-                user_obj = User.objects.get(email=email)
-                user = authenticate(request, username=user_obj.username, password=password)
-                if user:
-                    login(request, user)
-                    message = f"مرحباً {user.username} ✓"
-                    message_type = "success"
-                    return redirect('home')
-                else:
-                    message = "كلمة المرور خاطئة"
-                    message_type = "error"
-            except:
-                message = "البريد غير مسجل"
-                message_type = "error"
+        if not selected or price is None:
+            messages.error(request, "اختر نوع الدعوة.")
+        elif not event_date:
+            messages.error(request, "أدخل التاريخ.")
+        elif not phone or not place:
+            messages.error(request, "أكمل المكان ورقم التواصل.")
+        else:
+            Order.objects.create(
+                user=request.user if request.user.is_authenticated else None,
+                occasion=selected,
+                price=price,
+                date=event_date,
+                phone=phone,
+                place=place,
+                names=request.POST.get("names", "").strip(),
+                message=request.POST.get("message", "").strip(),
+            )
+            messages.success(request, "تم تسجيل الطلب.")
+            return redirect("home")
 
-        # خروج
-        elif action == 'logout':
-            logout(request)
-            return redirect('home')
-
-    # البحث
-    products = Product.objects.all().order_by('-id')
-    if search_query:
-        products = products.filter(Q(name__icontains=search_query) | Q(description__icontains=search_query))
-
-    static_products = [
-        {"name": "رسم رقمي", "price": "1000", "img": "e_invites/10.jpg"},
-        {"name": "بشارة مواليد", "price": "1000", "img": "e_invites/11.jpg"},
-        {"name": "حسب الطلب", "price": "1000", "img": "e_invites/13.jpg"},
-        {"name": "عيد", "price": "1000", "img": "e_invites/14.jpg"},
-        {"name": "حفل زفاف", "price": "1000", "img": "e_invites/19.jpg"},
-        {"name": "الشعار", "price": "1000", "img": "e_invites/22.jpg"},
-    ]
-
-    if search_query:
-        q = search_query.lower()
-        static_products = [item for item in static_products if q in item["name"].lower()]
-
-    context = {
-        'products': products,
-        'static_products': static_products,
-        'search_query': search_query,
-        'total_count': len(static_products) + products.count(),
-        'message': message,
-        'message_type': message_type,
-    }
-    return render(request, 'e_invites/home.html', context)
+    return render(request, "e_invites/order.html", {
+        "selected_product": selected,
+    })

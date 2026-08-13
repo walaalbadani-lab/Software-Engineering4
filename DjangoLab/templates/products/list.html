@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}قائمة المنتجات{% endblock %}
+
+{% block hero %}
+<section class="hero">
+  <div>
+    <h1>قائمة المنتجات</h1>
+    <p>تصفح جميع تصاميمنا ودعواتنا الإلكترونية</p>
+  </div>
+</section>
+{% endblock %}
+
+{% block content %}
+<div class="section-title">
+  <h2>جميع التصاميم المتاحة</h2>
+</div>
+<div class="grid">
+  {% for product in products %}
+  <article class="card" data-invite="{{ product.title }}">
+    {% if product.image %}
+      <img src="{{ product.image.url }}" alt="{{ product.title }}">
+    {% else %}
+      <img src="{% static 'e_invites/10.jpg' %}" alt="{{ product.title }}">
+    {% endif %}
+    <div class="card-body">
+      <h3>{{ product.title }}</h3>
+      <p class="muted">{{ product.description }}</p>
+      <div class="price">{{ product.price }} ر.س</div>
+      <a class="btn" href="{% url 'order' %}">اطلب هذا التصميم</a>
+    </div>
+  </article>
+  {% empty %}
+  <article class="card" data-invite="حفل زفاف">
+    <img src="{% static 'e_invites/10.jpg' %}" alt="حفل زفاف">
+    <div class="card-body"><h3>حفل زفاف</h3><div class="price">80 ر.س</div><a class="btn" href="{% url 'order' %}">اطلب</a></div>
+  </article>
+  <article class="card" data-invite="خطوبة">
+    <img src="{% static 'e_invites/10.jpg' %}" alt="خطوبة">
+    <div class="card-body"><h3>دعوة خطوبة</h3><div class="price">60 ر.س</div><a class="btn" href="{% url 'order' %}">اطلب</a></div>
+  </article>
+  <article class="card" data-invite="مواليد">
+    <img src="{% static 'e_invites/10.jpg' %}" alt="مواليد">
+    <div class="card-body"><h3>دعوة مواليد</h3><div class="price">50 ر.س</div><a class="btn" href="{% url 'order' %}">اطلب</a></div>
+  </article>
+  {% endfor %}
+</div>
+{% endblock %}

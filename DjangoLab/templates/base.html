@@ -1,0 +1,1002 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>{% block title %}دعوات الكترونيه🐆{% endblock %}</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --brown: #4a2b21;
+      --brown-dark: #281611;
+      --brown-soft: #79513f;
+      --gold: #d2ad73;
+      --beige: #ebddce;
+      --glass: rgba(255, 250, 244, 0.84);
+      --glass-strong: rgba(255, 250, 244, 0.95);
+      --text: #2d1a14;
+      --muted: #806451;
+      --border: rgba(104, 67, 49, 0.17);
+      --shadow: 0 20px 48px rgba(45, 26, 20, 0.14);
+    }
+
+    html[data-theme="dark"] {
+      --beige: #160d0a;
+      --glass: rgba(42, 25, 19, 0.86);
+      --glass-strong: rgba(45, 27, 21, 0.96);
+      --text: #f8eee5;
+      --muted: #d0b9a7;
+      --border: rgba(210, 173, 115, 0.18);
+      --shadow: 0 20px 48px rgba(0, 0, 0, 0.3);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      min-height: 100vh;
+      overflow-x: hidden;
+      color: var(--text);
+      background: var(--beige);
+      font-family: "Cairo", Tahoma, sans-serif;
+      line-height: 1.75;
+    }
+
+    /* صورة 22 تغطي الخلفية كاملة وتظهر بشفافية */
+    .site-background {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      overflow: hidden;
+      background: #eadbca;
+      pointer-events: none;
+    }
+
+    .site-background::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        url("{% static 'e_invites/22.jpg' %}")
+        center center / cover no-repeat;
+      opacity: 0.22;
+    }
+
+    .site-background::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(
+        135deg,
+        rgba(244, 233, 221, 0.55),
+        rgba(229, 211, 193, 0.48)
+      );
+    }
+
+    html[data-theme="dark"] .site-background {
+      background: #160d0a;
+    }
+
+    html[data-theme="dark"] .site-background::before {
+      opacity: 0.13;
+    }
+
+    html[data-theme="dark"] .site-background::after {
+      background: rgba(20, 11, 8, 0.65);
+    }
+
+    .site-shell {
+      position: relative;
+      z-index: 1;
+      min-height: 100vh;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    img,
+    video {
+      display: block;
+      max-width: 100%;
+    }
+
+    button,
+    input,
+    select,
+    textarea {
+      font: inherit;
+    }
+
+    button {
+      cursor: pointer;
+    }
+
+    /* الشريط العلوي */
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 40;
+      min-height: 68px;
+      display: flex;
+      align-items: center;
+      gap: 13px;
+      padding: 11px 20px;
+      color: #fff8f1;
+      background: rgba(58, 32, 24, 0.88);
+      border-bottom: 1px solid rgba(210, 173, 115, 0.23);
+      box-shadow: 0 8px 26px rgba(30, 15, 11, 0.12);
+      backdrop-filter: blur(16px);
+    }
+
+    .menu-button,
+    .notification-button {
+      position: relative;
+      width: 43px;
+      height: 43px;
+      flex: 0 0 43px;
+      display: grid;
+      place-items: center;
+      border: 1px solid rgba(210, 173, 115, 0.32);
+      border-radius: 13px;
+      color: #fff8f1;
+      background: rgba(255, 255, 255, 0.04);
+    }
+
+    .menu-button {
+      font-size: 25px;
+      line-height: 1;
+    }
+
+    .notification-button svg {
+      width: 20px;
+      height: 20px;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 1.8;
+    }
+
+    .notification-badge {
+      position: absolute;
+      top: -5px;
+      left: -5px;
+      min-width: 18px;
+      height: 18px;
+      display: grid;
+      place-items: center;
+      padding: 0 4px;
+      border-radius: 999px;
+      color: #2d1a14;
+      background: var(--gold);
+      font-size: 10px;
+      font-weight: 800;
+    }
+
+    .site-brand {
+      min-width: max-content;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .site-brand img {
+      width: 44px;
+      height: 44px;
+      flex: 0 0 44px;
+      object-fit: cover;
+      border: 1px solid var(--gold);
+      border-radius: 50%;
+      box-shadow: 0 0 0 4px rgba(210, 173, 115, 0.11);
+    }
+
+    .site-brand strong {
+      display: block;
+      font-size: 0.94rem;
+      line-height: 1.3;
+    }
+
+    .site-brand span {
+      display: block;
+      color: var(--gold);
+      direction: ltr;
+      text-align: right;
+      font-size: 0.74rem;
+      letter-spacing: 1px;
+    }
+
+    .topbar-tools {
+      flex: 1;
+      min-width: 0;
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 10px;
+    }
+
+    .header-search {
+      width: min(500px, 100%);
+    }
+
+    .header-search input {
+      width: 100%;
+      height: 43px;
+      padding: 9px 17px;
+      border: 1px solid transparent;
+      border-radius: 999px;
+      outline: none;
+      color: #2d1a14;
+      background: rgba(255, 250, 244, 0.97);
+    }
+
+    .header-search input:focus {
+      border-color: var(--gold);
+      box-shadow: 0 0 0 4px rgba(210, 173, 115, 0.14);
+    }
+
+    /* القائمة الجانبية */
+    .page-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 50;
+      display: none;
+      border: 0;
+      background: rgba(0, 0, 0, 0.4);
+      backdrop-filter: blur(2px);
+    }
+
+    .page-overlay.show {
+      display: block;
+    }
+
+    .sidebar {
+      position: fixed;
+      top: 0;
+      right: -260px;
+      z-index: 60;
+      width: 240px;
+      height: 100vh;
+      padding: 17px 13px;
+      overflow-y: auto;
+      color: #fff7ee;
+      background: rgba(32, 17, 13, 0.98);
+      border-left: 1px solid rgba(210, 173, 115, 0.2);
+      box-shadow: -20px 0 45px rgba(0, 0, 0, 0.22);
+      transition: right 0.24s ease;
+    }
+
+    .sidebar.open {
+      right: 0;
+    }
+
+    .sidebar-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 5px 5px 14px;
+      margin-bottom: 12px;
+      border-bottom: 1px solid rgba(210, 173, 115, 0.17);
+    }
+
+    .sidebar-head strong {
+      display: block;
+      font-size: 0.87rem;
+    }
+
+    .sidebar-head span {
+      display: block;
+      color: var(--gold);
+      direction: ltr;
+      text-align: right;
+      font-size: 0.72rem;
+    }
+
+    .close-menu {
+      width: 34px;
+      height: 34px;
+      display: grid;
+      place-items: center;
+      border: 0;
+      border-radius: 10px;
+      color: #fff;
+      background: rgba(255, 255, 255, 0.06);
+      font-size: 20px;
+    }
+
+    .user-box {
+      padding: 9px 11px;
+      margin-bottom: 10px;
+      border: 1px solid rgba(210, 173, 115, 0.17);
+      border-radius: 13px;
+      background: rgba(255, 255, 255, 0.04);
+    }
+
+    .user-box small {
+      display: block;
+      color: #cdb8a7;
+      font-size: 0.68rem;
+    }
+
+    .user-box b {
+      font-size: 0.82rem;
+    }
+
+    .side-link,
+    .side-button {
+      width: 100%;
+      min-height: 39px;
+      display: flex;
+      align-items: center;
+      padding: 8px 11px;
+      margin-bottom: 3px;
+      border: 0;
+      border-radius: 10px;
+      color: #fff7ee;
+      background: transparent;
+      text-align: right;
+      font-size: 0.85rem;
+    }
+
+    .side-link:hover,
+    .side-button:hover {
+      color: var(--gold);
+      background: rgba(210, 173, 115, 0.13);
+    }
+
+    .side-divider {
+      height: 1px;
+      margin: 11px 3px;
+      background: rgba(210, 173, 115, 0.15);
+    }
+
+    .social-side-card {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 9px 10px;
+      margin-bottom: 7px;
+      border: 1px solid rgba(210, 173, 115, 0.18);
+      border-radius: 13px;
+      background: rgba(255, 255, 255, 0.04);
+    }
+
+    .social-side-card:hover {
+      border-color: rgba(210, 173, 115, 0.45);
+    }
+
+    .social-mark {
+      width: 35px;
+      height: 35px;
+      flex: 0 0 35px;
+      display: grid;
+      place-items: center;
+      border-radius: 11px;
+      color: #2d1a14;
+      background: linear-gradient(135deg, #efd3a4, #b8864d);
+      font-size: 0.7rem;
+      font-weight: 800;
+    }
+
+    .social-side-card b {
+      display: block;
+      font-size: 0.77rem;
+    }
+
+    .social-side-card span {
+      display: block;
+      color: #d3bfae;
+      direction: ltr;
+      text-align: right;
+      font-size: 0.68rem;
+    }
+
+    .outline-side {
+      justify-content: center;
+      margin-top: 8px;
+      border: 1px solid rgba(210, 173, 115, 0.28);
+      border-radius: 999px;
+    }
+
+    .logout-form {
+      margin: 0;
+    }
+
+    /* الإشعارات */
+    .notification-panel {
+      position: fixed;
+      top: 78px;
+      left: 18px;
+      z-index: 60;
+      width: min(350px, calc(100% - 36px));
+      display: none;
+      padding: 14px;
+      border: 1px solid rgba(210, 173, 115, 0.23);
+      border-radius: 20px;
+      color: var(--text);
+      background: var(--glass-strong);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(16px);
+    }
+
+    .notification-panel.show {
+      display: block;
+    }
+
+    .notification-panel h3 {
+      margin-bottom: 8px;
+      font-size: 0.95rem;
+    }
+
+    .notification-item {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 9px 4px;
+      border-bottom: 1px solid var(--border);
+      font-size: 0.78rem;
+    }
+
+    .notification-item:last-child {
+      border-bottom: 0;
+    }
+
+    .notification-item span {
+      color: var(--muted);
+      font-size: 0.7rem;
+    }
+
+    /* الرسائل */
+    .messages {
+      width: min(1250px, 94%);
+      margin: 14px auto 0;
+    }
+
+    .message {
+      padding: 11px 15px;
+      margin-bottom: 8px;
+      border: 1px solid rgba(210, 173, 115, 0.24);
+      border-radius: 14px;
+      color: var(--text);
+      background: var(--glass-strong);
+      box-shadow: 0 10px 25px rgba(45, 26, 20, 0.08);
+    }
+
+    /* المحتوى */
+    .site-main {
+      width: min(1280px, 94%);
+      min-height: calc(100vh - 145px);
+      margin: 0 auto;
+      padding: 36px 0 75px;
+    }
+
+    .search-status {
+      display: none;
+      width: max-content;
+      max-width: 100%;
+      margin: 0 auto 24px;
+      padding: 7px 15px;
+      border: 1px solid rgba(210, 173, 115, 0.24);
+      border-radius: 999px;
+      color: var(--muted);
+      background: var(--glass);
+      font-size: 0.8rem;
+      backdrop-filter: blur(10px);
+    }
+
+    .search-status.show {
+      display: block;
+    }
+
+    /*
+      عرض ثابت للبطاقات.
+      عندما يظهر منتج واحد بالبحث لن يتمدد ولن يكبر.
+    */
+    .products-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 390px));
+      justify-content: center;
+      align-items: start;
+      gap: 28px;
+    }
+
+    .product-card {
+      width: 100%;
+      max-width: 390px;
+      overflow: hidden;
+      border: 1px solid rgba(210, 173, 115, 0.24);
+      border-radius: 28px;
+      background: var(--glass);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(11px);
+    }
+
+    .product-media {
+      width: 100%;
+      height: 365px;
+      padding: 10px;
+      object-fit: contain;
+      background: rgba(232, 215, 197, 0.55);
+    }
+
+    html[data-theme="dark"] .product-media {
+      background: rgba(22, 12, 9, 0.5);
+    }
+
+    .product-body {
+      padding: 18px 20px 21px;
+    }
+
+    .product-body h3 {
+      font-size: 1.15rem;
+      font-weight: 800;
+    }
+
+    .product-price {
+      margin: 7px 0 14px;
+      color: var(--brown-soft);
+      font-size: 1.02rem;
+      font-weight: 800;
+    }
+
+    html[data-theme="dark"] .product-price {
+      color: var(--gold);
+    }
+
+    .primary-button {
+      min-height: 41px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 8px 20px;
+      border: 0;
+      border-radius: 999px;
+      color: #fff8f1;
+      background: var(--brown);
+      font-size: 0.88rem;
+      font-weight: 800;
+    }
+
+    .primary-button:hover {
+      background: var(--brown-dark);
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    .search-match {
+      animation: revealCard 0.24s ease;
+    }
+
+    @keyframes revealCard {
+      from {
+        opacity: 0;
+        transform: translateY(7px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* النماذج */
+    .glass-panel {
+      width: min(820px, 100%);
+      margin: 0 auto;
+      padding: 30px;
+      border: 1px solid rgba(210, 173, 115, 0.25);
+      border-radius: 29px;
+      background: var(--glass);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(13px);
+    }
+
+    .glass-panel h1 {
+      margin-bottom: 5px;
+      font-size: 1.8rem;
+    }
+
+    .panel-subtitle {
+      margin-bottom: 20px;
+      color: var(--muted);
+      font-size: 0.84rem;
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 15px;
+    }
+
+    .field.full {
+      grid-column: 1 / -1;
+    }
+
+    .field {
+      margin-top: 13px;
+    }
+
+    .field label {
+      display: block;
+      margin-bottom: 6px;
+      font-size: 0.83rem;
+      font-weight: 700;
+    }
+
+    .field input,
+    .field select,
+    .field textarea {
+      width: 100%;
+      min-height: 47px;
+      padding: 11px 13px;
+      border: 1px solid #ddc8b3;
+      border-radius: 13px;
+      outline: none;
+      color: #2d1a14;
+      background: rgba(255, 252, 248, 0.98);
+    }
+
+    .field input:focus,
+    .field select:focus,
+    .field textarea:focus {
+      border-color: var(--gold);
+      box-shadow: 0 0 0 4px rgba(210, 173, 115, 0.13);
+    }
+
+    .field textarea {
+      min-height: 120px;
+      resize: vertical;
+    }
+
+    .price-input {
+      color: var(--brown) !important;
+      background: #f0e3d5 !important;
+      font-weight: 800;
+    }
+
+    .form-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-top: 20px;
+    }
+
+    .secondary-link {
+      min-height: 41px;
+      display: inline-flex;
+      align-items: center;
+      padding: 8px 18px;
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      color: var(--muted);
+      background: var(--glass-strong);
+      font-size: 0.85rem;
+    }
+
+    /* الدخول والتسجيل بنفس الشكل */
+    .auth-panel {
+      width: min(460px, 100%);
+    }
+
+    .auth-logo {
+      width: 72px;
+      height: 72px;
+      object-fit: cover;
+      margin-bottom: 13px;
+      border: 1px solid var(--gold);
+      border-radius: 50%;
+      box-shadow: 0 0 0 6px rgba(210, 173, 115, 0.11);
+    }
+
+    .auth-links {
+      margin-top: 16px;
+      color: var(--muted);
+      font-size: 0.84rem;
+    }
+
+    .auth-links a {
+      color: var(--brown-soft);
+      font-weight: 700;
+    }
+
+    .form-hint {
+      margin-top: 5px;
+      color: var(--muted);
+      font-size: 0.74rem;
+    }
+
+    .form-error,
+    .error-list {
+      margin-top: 6px;
+      color: #a22f2f;
+      font-size: 0.78rem;
+      list-style: none;
+    }
+
+    .password-option {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      margin-top: 8px;
+      color: var(--muted);
+      font-size: 0.76rem;
+    }
+
+    .password-option input {
+      width: auto;
+      min-height: auto;
+    }
+
+    .site-footer {
+      padding: 15px;
+      text-align: center;
+      color: var(--muted);
+      font-size: 0.76rem;
+    }
+
+    @media (max-width: 720px) {
+      .topbar {
+        flex-wrap: wrap;
+        padding: 9px 11px;
+      }
+
+      .site-brand strong {
+        font-size: 0.76rem;
+      }
+
+      .site-brand span {
+        display: none;
+      }
+
+      .site-brand img {
+        width: 39px;
+        height: 39px;
+      }
+
+      .topbar-tools {
+        order: 3;
+        min-width: 100%;
+      }
+
+      .products-grid {
+        grid-template-columns: minmax(0, 420px);
+      }
+
+      .product-media {
+        height: 330px;
+      }
+
+      .form-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .field.full {
+        grid-column: auto;
+      }
+
+      .glass-panel {
+        padding: 23px 19px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="site-background"></div>
+
+  <div class="site-shell">
+    <header class="topbar">
+      <button class="menu-button" id="menuButton" type="button" aria-label="القائمة">
+        ⋮
+      </button>
+
+      <a class="site-brand" href="{% url 'home' %}">
+        <img src="{% static 'e_invites/22.jpg' %}" alt="دعوات الكترونيه">
+        <div>
+          <strong>دعوات الكترونيه🐆</strong>
+          <span>_4cioq</span>
+        </div>
+      </a>
+
+      <div class="topbar-tools">
+        {% block header_tools %}{% endblock %}
+
+        <button class="notification-button" id="notificationButton" type="button" aria-label="الإشعارات">
+          <svg viewBox="0 0 24 24">
+            <path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9"></path>
+            <path d="M10 21h4"></path>
+          </svg>
+
+          {% if notification_count %}
+            <span class="notification-badge">{{ notification_count }}</span>
+          {% endif %}
+        </button>
+      </div>
+    </header>
+
+    {% if messages %}
+      <div class="messages">
+        {% for message in messages %}
+          <div class="message">{{ message }}</div>
+        {% endfor %}
+      </div>
+    {% endif %}
+
+    <button class="page-overlay" id="pageOverlay" type="button"></button>
+
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-head">
+        <div>
+          <strong>دعوات الكترونيه🐆</strong>
+          <span>_4cioq</span>
+        </div>
+
+        <button class="close-menu" id="closeMenu" type="button">×</button>
+      </div>
+
+      {% if user.is_authenticated %}
+        <div class="user-box">
+          <small>الحساب</small>
+          <b>{{ user.username }}</b>
+        </div>
+      {% endif %}
+
+      <nav>
+        <a class="side-link" href="{% url 'home' %}">الرئيسية</a>
+        <a class="side-link" href="{% url 'order' %}">طلب</a>
+        <a class="side-link" href="{% url 'about' %}">حول</a>
+
+        <button class="side-button" id="sideNotifications" type="button">
+          الإشعارات
+        </button>
+
+        {% if not user.is_authenticated %}
+          <a class="side-link" href="{% url 'login' %}">دخول</a>
+          <a class="side-link" href="{% url 'register' %}">تسجيل حساب</a>
+        {% endif %}
+      </nav>
+
+      <div class="side-divider"></div>
+
+      <!-- التواصل يظهر داخل القائمة فقط -->
+      <a class="social-side-card"
+         href="https://www.instagram.com/_4cioq/"
+         target="_blank"
+         rel="noopener">
+        <div class="social-mark">IG</div>
+        <div>
+          <b>Instagram</b>
+          <span>_4cioq</span>
+        </div>
+      </a>
+
+      <a class="social-side-card"
+         href="https://www.tiktok.com/@_4cioq"
+         target="_blank"
+         rel="noopener">
+        <div class="social-mark">TT</div>
+        <div>
+          <b>TikTok</b>
+          <span>_4cioq</span>
+        </div>
+      </a>
+
+      <button class="side-button outline-side" id="themeButton" type="button">
+        الوضع الليلي
+      </button>
+
+      {% if user.is_authenticated %}
+        <form class="logout-form" method="post" action="{% url 'logout' %}">
+          {% csrf_token %}
+          <button class="side-button outline-side" type="submit">خروج</button>
+        </form>
+      {% endif %}
+    </aside>
+
+    <section class="notification-panel" id="notificationPanel">
+      <h3>الإشعارات</h3>
+
+      {% if user.is_authenticated %}
+        {% for item in site_notifications %}
+          <div class="notification-item">
+            <div>
+              <b>{{ item.occasion }}</b>
+              <span>{{ item.get_status_display }}</span>
+            </div>
+            <span>{{ item.created_at|date:"Y/m/d" }}</span>
+          </div>
+        {% empty %}
+          <div class="notification-item">
+            <span>لا توجد إشعارات</span>
+          </div>
+        {% endfor %}
+      {% else %}
+        <div class="notification-item">
+          <a href="{% url 'login' %}">دخول</a>
+        </div>
+      {% endif %}
+    </section>
+
+    <main class="site-main">
+      {% block content %}{% endblock %}
+    </main>
+
+    <footer class="site-footer">
+      دعوات الكترونيه🐆 · _4cioq
+    </footer>
+  </div>
+
+  <script>
+    const root = document.documentElement;
+    const sidebar = document.getElementById("sidebar");
+    const overlay = document.getElementById("pageOverlay");
+    const notificationPanel = document.getElementById("notificationPanel");
+    const themeButton = document.getElementById("themeButton");
+
+    function closePanels() {
+      sidebar.classList.remove("open");
+      notificationPanel.classList.remove("show");
+      overlay.classList.remove("show");
+    }
+
+    document.getElementById("menuButton").addEventListener("click", function () {
+      notificationPanel.classList.remove("show");
+      sidebar.classList.add("open");
+      overlay.classList.add("show");
+    });
+
+    document.getElementById("closeMenu").addEventListener("click", closePanels);
+    overlay.addEventListener("click", closePanels);
+
+    function toggleNotifications() {
+      sidebar.classList.remove("open");
+      notificationPanel.classList.toggle("show");
+      overlay.classList.toggle(
+        "show",
+        notificationPanel.classList.contains("show")
+      );
+    }
+
+    document.getElementById("notificationButton").addEventListener("click", toggleNotifications);
+    document.getElementById("sideNotifications").addEventListener("click", toggleNotifications);
+
+    const savedTheme = localStorage.getItem("theme") || "light";
+    root.setAttribute("data-theme", savedTheme);
+
+    themeButton.textContent =
+      savedTheme === "dark" ? "الوضع النهاري" : "الوضع الليلي";
+
+    themeButton.addEventListener("click", function () {
+      const next =
+        root.getAttribute("data-theme") === "dark" ? "light" : "dark";
+
+      root.setAttribute("data-theme", next);
+      localStorage.setItem("theme", next);
+
+      themeButton.textContent =
+        next === "dark" ? "الوضع النهاري" : "الوضع الليلي";
+    });
+
+    document.addEventListener("keydown", function (event) {
+      if (event.key === "Escape") {
+        closePanels();
+      }
+    });
+  </script>
+
+  {% block scripts %}{% endblock %}
+</body>
+</html>

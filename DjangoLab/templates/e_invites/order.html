@@ -1,0 +1,53 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>طلب | دعوات الكترونيه🐆</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;800&display=swap" rel="stylesheet">
+  <style>
+    body{margin:0;font-family:"Cairo",Tahoma,sans-serif;background:#ead9c8;color:#2b1812;}
+    body::before{content:"";position:fixed;inset:0;background:url("{% static 'e_invites/22.jpg' %}") center/cover no-repeat;opacity:.16;}
+    .wrap{position:relative;width:min(640px,92%);margin:36px auto;}
+    .card{background:rgba(255,248,241,.93);border-radius:24px;padding:26px;}
+    .back{display:inline-block;margin-bottom:12px;background:#3a2119;color:#fff8f1;padding:8px 14px;border-radius:999px;text-decoration:none;}
+    label{display:block;font-weight:700;margin:12px 0 6px;}
+    input,select,textarea{width:100%;padding:11px 12px;border:1px solid #e3d2c1;border-radius:12px;}
+    textarea{min-height:110px;} button{margin-top:16px;border:0;background:#3a2119;color:#fff8f1;border-radius:999px;padding:11px 18px;font-weight:800;}
+    .ok{color:#1b5e20;} .err{color:#9b1c1c;}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <a class="back" href="{% url 'home' %}">الرئيسية</a>
+    <section class="card">
+      <h1>تفاصيل الطلب</h1>
+      {% if messages %}{% for m in messages %}<p class="err">{{ m }}</p>{% endfor %}{% endif %}
+      <form method="post">{% csrf_token %}
+        <label>نوع الدعوة</label>
+        <select name="occasion" id="occasion" required>
+          <option value="">اختر</option>
+          <option value="رسم رقمي" {% if selected_product == "رسم رقمي" %}selected{% endif %}>رسم رقمي</option>
+          <option value="مواليد" {% if selected_product == "مواليد" %}selected{% endif %}>مواليد</option>
+          <option value="زفاف" {% if selected_product == "زفاف" %}selected{% endif %}>زفاف</option>
+          <option value="تخرج" {% if selected_product == "تخرج" %}selected{% endif %}>تخرج</option>
+          <option value="فيديو" {% if selected_product == "فيديو" %}selected{% endif %}>فيديو</option>
+          <option value="جرائد وورقيات" {% if selected_product == "جرائد وورقيات" %}selected{% endif %}>جرائد وورقيات</option>
+        </select>
+        <label>السعر</label><input id="price" type="text" readonly>
+        <label>التاريخ</label><input type="date" name="date" required>
+        <label>المكان</label><input type="text" name="place" required>
+        <label>رقم التواصل</label><input type="tel" name="phone" required>
+        <label>الأسماء</label><input type="text" name="names">
+        <label>تفاصيل</label><textarea name="message"></textarea>
+        <button type="submit">تأكيد الطلب</button>
+      </form>
+    </section>
+  </div>
+  <script>
+    const prices={"رسم رقمي":"1000 ر.ي","مواليد":"1000 ر.ي","زفاف":"1000 ر.ي","تخرج":"1000 ر.ي","فيديو":"300 ر.ي","جرائد وورقيات":"500 ر.ي"};
+    const s=document.getElementById("occasion"), p=document.getElementById("price");
+    const up=()=>{p.value=prices[s.value]||"";}; s.onchange=up; up();
+  </script>
+</body>
+</html>
